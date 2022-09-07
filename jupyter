@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+# Jupyter lab kernels CWD are set to the notebook location. This will make them
+# behave as if loaded from the project home folder
+export PYTHONPATH="$PWD"
+export GAMMA_CONFIG_ROOT="$PWD/config"
+
+jupyter lab --ip 0.0.0.0 "$@"

@@ -1,0 +1,9 @@
+# script to initialize pantanal Python environment
+
+conda activate pantanal
+python -c 'import gamma.config' || make install-deps
+
+# SOURCE=${BASH_SOURCE:-$0}
+# HERE="$(dirname $(readlink -f $SOURCE))"
+export PYTHONPATH="$PWD"
+export GAMMA_CONFIG_ROOT="$PWD/config"

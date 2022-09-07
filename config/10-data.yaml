@@ -1,0 +1,127 @@
+data_context:
+  project_uri: !py:runner.fs:get_project_uri
+  data_folder: !env DATA_FOLDER|None
+  data_uri: !j2 "{{ c.data_context.data_folder }}"
+
+data:
+  raw:
+    base_uri: !j2 "{{ c.data_context.data_uri}}/raw"
+    tables:
+      temp_1_area: 
+        path: "culturas_temporarias_1.xlsx"
+        format: xlsx
+        source: IBGE
+        kwargs:
+          sheet_name: 0
+          skiprows: 3
+          header: [0,1]
+          index_col: [0,1]
+      temp_2_area: 
+        path: "culturas_temporarias_2.xlsx"
+        format: xlsx
+        source: IBGE
+        kwargs:
+          sheet_name: 0
+          skiprows: 3
+          header: [0,1]
+          index_col: [0,1]
+      temp_3_area: 
+        path: "culturas_temporarias_3.xlsx"
+        format: xlsx
+        source: IBGE
+        kwargs:
+          sheet_name: 0
+          skiprows: 3
+          header: [0,1]
+          index_col: [0,1]
+      perm_area: 
+        path: "culturas_permanentes.xlsx"
+        format: xlsx
+        source: IBGE
+        kwargs:
+          sheet_name: 0
+          skiprows: 3
+          header: [0,1]
+          index_col: [0,1]
+      temp_1_qntd: 
+        path: "culturas_temporarias_1.xlsx"
+        format: xlsx
+        source: IBGE
+        kwargs:
+          sheet_name: 1
+          skiprows: 3
+          header: [0,1]
+          index_col: [0,1]
+      temp_2_qntd: 
+        path: "culturas_temporarias_2.xlsx"
+        format: xlsx
+        source: IBGE
+        kwargs:
+          sheet_name: 1
+          skiprows: 3
+          header: [0,1]
+          index_col: [0,1]
+      temp_3_qntd: 
+        path: "culturas_temporarias_3.xlsx"
+        format: xlsx
+        source: IBGE
+        kwargs:
+          sheet_name: 1
+          skiprows: 3
+          header: [0,1]
+          index_col: [0,1]
+      perm_qntd: 
+        path: "culturas_permanentes.xlsx"
+        format: xlsx
+        source: IBGE
+        kwargs:
+          sheet_name: 1
+          skiprows: 3
+          header: [0,1]
+          index_col: [0,1]
+      pecuaria: 
+        path: "pecuaria.xlsx"
+        format: xlsx
+        source: IBGE
+        kwargs:
+          sheet_name: 0
+          skiprows: 3
+          header: [0,1]
+          index_col: [0,1]
+      land_use: 
+        path: "1-ESTATISTICAS_MapBiomas_COL6.0_UF-MUNICIPIOS_v12_SITE.xlsx"
+        format: xlsx
+        source: MAPBIOMAS
+        kwargs:
+          sheet_name: LAND COVER
+
+  preprocessed:
+    base_uri: !j2 "{{ c.data_context.data_uri }}/preprocessed"
+    tables:
+      area: 
+        path: "area.parquet"
+        format: parquet
+      quantity: 
+        path: "quantity.parquet"
+        format: parquet
+      pecuaria: 
+        path: "pecuaria.parquet"
+        format: parquet
+      land_use: 
+        path: land_use.parquet
+        format: parquet
+  domain:
+    base_uri: !j2 "{{ c.data_context.data_uri }}/domain"
+    tables:
+      pantanal: 
+        path: "pantanal.parquet"
+        format: parquet
+      deforestation:
+        path: deforestatio.parquet
+        format: parquet
+  model:
+    base_uri: !j2 "{{ c.data_context.data_uri }}/model"
+    tables:
+      model_df: 
+        path: "model_df.parquet"
+        format: parquet

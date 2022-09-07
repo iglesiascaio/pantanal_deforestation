@@ -1,0 +1,33 @@
+# User specific environment variables
+.env
+
+build/
+dist/
+tmp/
+docs/_build
+/.mypy_cache/
+
+__pycache__
+*.pyc
+.ipynb_checkpoints
+.DS_Store
+.vscode
+
+*.lock
+*.dirlock
+*.egg-info
+
+*.parquet
+*.parquet.crc
+*._SUCCESS.crc
+*.pickle
+*.pkl
+*.pqt
+*.log
+*.csv
+*.local.*
+*.xlsx
+/.pytest_cache
+
+# Images
+*.png
