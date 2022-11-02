@@ -6,27 +6,22 @@ from ..data_utils import pipe
 from runner import io
 
 
-def _melt_and_treat_df(df_land_use):
-    """
-    Melt and treat land use DataFrame.
-    """
+@pipe
+def _create_cols(df):
 
-    melted_df = (
-        pd.melt(
-            df_land_use.query('level_1 == "1. Forest"'),
-            id_vars=["state", "city"],
-            value_vars=list(range(1985, 2021)),
-            var_name="year",
-            value_name="area_ha",
-        )
-        .groupby(["state", "city", "year"])
-        .sum()
-        .reset_index()
-    )
+    df["location"] = df["city"] + " (" + df["state"] + ")"
 
-    melted_df["location"] = melted_df["city"] + " (" + melted_df["state"] + ")"
+    return df
 
-    return melted_df
+
+@pipe
+def _rename_cols(df):
+
+    dict_rename_cols = {i: str(i) for i in range(1985, 2021)}
+
+    df = df.rename(columns=dict_rename_cols)
+
+    return df
 
 
 def run():
@@ -38,7 +33,7 @@ def run():
     df_land_use = io.load_table("raw", "land_use")
 
     # # pre-processing steps
-    data_p = _melt_and_treat_df(df_land_use)
+    data_p = df_land_use >> _rename_cols() >> _create_cols()
 
     return data_p
 

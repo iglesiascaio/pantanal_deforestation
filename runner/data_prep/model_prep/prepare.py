@@ -2,22 +2,24 @@ import pandas as pd
 import click
 import datetime
 
-from ..data_utils import pipe
+from runner.data_prep.data_utils.utils import remove_special_char
+
+from ..data_utils import pipe, remove_special_char
 
 from runner import io
 
 
 @pipe
-def _prepare_deforestation_df(deforestation_df):
+def _prepare_deforestation_pantanal_df(deforestation_df):
 
-    deforestation_df = deforestation_df.drop(columns=["area_ha", "area_ha_lag"])
+    # deforestation_df = deforestation_df.drop(columns=["area_ha", "area_ha_lag"])
     deforestation_df["year"] = deforestation_df["year"].dt.year.astype("str")
 
     return deforestation_df
 
 
 @pipe
-def _prepare_pantanal_df(pantanal_df):
+def _prepare_production_pantanal_df(pantanal_df):
 
     pecuaria_df = pantanal_df.query('type=="pecuaria"')
     crops_df = pantanal_df.query('type!="pecuaria"')
@@ -32,7 +34,7 @@ def _prepare_pantanal_df(pantanal_df):
 
     crops_df = pd.pivot_table(
         crops_df,
-        values=["area_ha", "quantidade_ton"],
+        values=["quantidade_ton", "delta_quantidade_ton"],
         index=["location", "year"],
         columns=["crop"],
     )
@@ -50,31 +52,112 @@ def _prepare_pantanal_df(pantanal_df):
     return merged_processed_pantanal_df
 
 
-def _merge_dfs(processed_pantanal_df, processed_deforestation_df):
-    """
-    Merge processed domain DataFrames.
-    """
+@pipe
+def _prepare_environmental_law_df(environmental_law_df):
 
     import ipdb
 
     ipdb.set_trace()
 
-    merged_df = processed_pantanal_df.merge(
-        processed_deforestation_df, on=["location", "year"]
-    ).drop(columns=["location"])
+    environmental_law_df.columns = [
+        "law_" + i.lower().replace(" ", "_") >> remove_special_char()
+        if i != "year"
+        else i
+        for i in environmental_law_df.columns
+    ]
+
+    return environmental_law_df
+
+
+def _merge_dfs(
+    processed_pantanal_df,
+    processed_deforestation_df,
+    area_pantanal_features_df,
+    environmental_law_df,
+):
+    """
+    Merge processed domain DataFrames.
+    """
+
+    merged_df = (
+        processed_pantanal_df.merge(processed_deforestation_df, on=["location", "year"])
+        .merge(area_pantanal_features_df, on=["location", "year"])
+        .drop(columns=["location"])
+        .merge(environmental_law_df, on=["year"], how="left")
+    )
+
+    cols_laws = environmental_law_df.drop(columns=["year"]).columns
+
+    merged_df[cols_laws] = merged_df[cols_laws].fillna(0)
+
+    return merged_df
+
+
+@pipe
+def _create_lag_vars(merged_df, n_lag):
+
+    grouped_df = merged_df.groupby(["city"])
+
+    def __lag_by_group(key, value_df, i):
+        df = value_df.assign(group=key)
+        return (
+            df.sort_values(by=["year"], ascending=True)
+            .set_index(["year"])
+            .shift(i)
+            .rename(
+                columns={
+                    "deforestation_ha": "deforestation_ha_lag_" + str(i),
+                    "nb_heads_cattle": "nb_heads_cattle_lag_" + str(i),
+                }
+            )[
+                [
+                    "city",
+                    "deforestation_ha_lag_" + str(i),
+                    "nb_heads_cattle_lag_" + str(i),
+                ]
+            ]
+        )
+
+    for i in range(1, n_lag + 1):
+        dflist = [
+            __lag_by_group(g, grouped_df.get_group(g), i)
+            for g in grouped_df.groups.keys()
+        ]
+        lagged_df_it = pd.concat(dflist, axis=0).reset_index()
+        merged_df = merged_df.merge(lagged_df_it, on=["city", "year"], how="left")
+
+    import ipdb
+
+    ipdb.set_trace()
 
     return merged_df
 
 
 def run():
 
-    pantanal_df = io.load_table("domain", "pantanal")
-    deforestation_df = io.load_table("domain", "deforestation")
+    production_pantanal_df = io.load_table("domain", "pantanal")
+    deforestation_pantanal_df = io.load_table("domain", "deforestation")
+    area_pantanal_features_df = io.load_table("domain", "area_pantanal_features")
+    environmental_law_df = io.load_table("domain", "environmental_laws")
+    n_lags = 5
 
-    processed_pantanal_df = pantanal_df >> _prepare_pantanal_df()
-    processed_deforestation_df = deforestation_df >> _prepare_deforestation_df()
+    processed_production_pantanal_df = (
+        production_pantanal_df >> _prepare_production_pantanal_df()
+    )
+    processed_deforestation_df = (
+        deforestation_pantanal_df >> _prepare_deforestation_pantanal_df()
+    )
 
-    model_df = _merge_dfs(processed_pantanal_df, processed_deforestation_df)
+    preproceed_environmental_law_df = (
+        environmental_law_df >> _prepare_environmental_law_df()
+    )
+
+    model_df = _merge_dfs(
+        processed_production_pantanal_df,
+        processed_deforestation_df,
+        area_pantanal_features_df,
+        environmental_law_df,
+    ) >> _create_lag_vars(n_lags)
 
     return model_df
 

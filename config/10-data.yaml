@@ -94,6 +94,18 @@ data:
         source: MAPBIOMAS
         kwargs:
           sheet_name: LAND COVER
+      land_use_transitions: 
+        path: "1-ESTATISTICAS_MapBiomas_COL6.0_UF-MUNICIPIOS_v12_SITE.xlsx"
+        format: xlsx
+        source: MAPBIOMAS
+        kwargs:
+          sheet_name: TRANSITIONS
+      land_use_transitions_new: 
+        path: "mapbiomas-2021.xlsx"
+        format: xlsx
+        source: MAPBIOMAS
+        kwargs:
+          sheet_name: TRANSICAO_COL7
 
   preprocessed:
     base_uri: !j2 "{{ c.data_context.data_uri }}/preprocessed"
@@ -110,6 +122,13 @@ data:
       land_use: 
         path: land_use.parquet
         format: parquet
+      land_use_transitions: 
+        path: land_use_transitions.parquet
+        format: parquet
+      environmental_laws: 
+        path: environmental_laws.parquet
+        format: parquet
+      
   domain:
     base_uri: !j2 "{{ c.data_context.data_uri }}/domain"
     tables:
@@ -118,6 +137,12 @@ data:
         format: parquet
       deforestation:
         path: deforestatio.parquet
+        format: parquet
+      area_pantanal_features:
+        path: area_pantanal_features.parquet
+        format: parquet
+      environmental_laws: 
+        path: environmental_laws.parquet
         format: parquet
   model:
     base_uri: !j2 "{{ c.data_context.data_uri }}/model"
