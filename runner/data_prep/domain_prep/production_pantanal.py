@@ -62,15 +62,15 @@ def _agg_cultures(production_df):
     most_relevant_cultures = list(
         (
             (
-                production_df.groupby("crop").quantidade_ton.sum()
-                / production_df.quantidade_ton.sum()
+                production_df.groupby("crop").quantity_ton.sum()
+                / production_df.quantity_ton.sum()
             )
             .sort_values(ascending=False)
             .reset_index()
         )
-        .query("quantidade_ton > 0.1")
+        .query("quantity_ton > 0.1")
         .crop.unique()
-    ) + ["Bovino"]
+    ) + ["Cattle"]
 
     specific_df = production_df.query("crop.isin(@most_relevant_cultures)")
     non_specific_df = production_df.query("~crop.isin(@most_relevant_cultures)").assign(
@@ -79,7 +79,7 @@ def _agg_cultures(production_df):
 
     non_specific_df = non_specific_df.groupby(
         ["location", "year", "crop"], as_index=False
-    )[["area_ha", "quantidade_ton"]].sum()
+    )[["area_ha", "quantity_ton"]].sum()
 
     final_df = pd.concat([specific_df, non_specific_df])
 
@@ -88,10 +88,6 @@ def _agg_cultures(production_df):
 
 @pipe
 def _create_delta_variables(pantanal_df):
-
-    import ipdb
-
-    ipdb.set_trace()
 
     grouped_df = pantanal_df.groupby(["location", "crop"])
 
@@ -104,7 +100,7 @@ def _create_delta_variables(pantanal_df):
             .rename(
                 columns={
                     "area_ha": "area_ha_lag",
-                    "quantidade_ton": "quantidade_ton_lag",
+                    "quantity_ton": "quantity_ton_lag",
                     "numero_cabecas": "numero_cabecas_lag",
                 }
             )[
@@ -112,7 +108,7 @@ def _create_delta_variables(pantanal_df):
                     "location",
                     "crop",
                     "area_ha_lag",
-                    "quantidade_ton_lag",
+                    "quantity_ton_lag",
                     "numero_cabecas_lag",
                 ]
             ]
@@ -130,8 +126,8 @@ def _create_delta_variables(pantanal_df):
         pantanal_df["area_ha"] - pantanal_df["area_ha_lag"]
     ).apply(lambda x: max(0, x))
 
-    pantanal_df["delta_quantidade_ton"] = (
-        pantanal_df["quantidade_ton"] - pantanal_df["quantidade_ton_lag"]
+    pantanal_df["delta_quantity_ton"] = (
+        pantanal_df["quantity_ton"] - pantanal_df["quantity_ton_lag"]
     ).apply(lambda x: max(0, x))
 
     pantanal_df["delta_nb_heads"] = (
@@ -139,7 +135,29 @@ def _create_delta_variables(pantanal_df):
     ).apply(lambda x: max(0, x))
 
     pantanal_df = pantanal_df.drop(
-        columns=["area_ha_lag", "quantidade_ton_lag", "numero_cabecas_lag"]
+        columns=["area_ha_lag", "quantity_ton_lag", "numero_cabecas_lag"]
+    )
+
+    return pantanal_df
+
+
+@pipe
+def _rename_crops(pantanal_df):
+
+    pantanal_df["crop"] = pantanal_df["crop"].replace(
+        {
+            "Arroz (em casca)": "Rice",
+            "Cana-de-açúcar": "Sugar cane",
+            "Feijão (em grão)": "Beans (grain)",
+            "Algodão herbáceo (em caroço)": "Herbaceous cotton (seed)",
+            "Milho (em grão)": "Corn (grain)",
+            "Soja (em grão)": "Soybeans (grain)",
+            "Trigo (em grão)": "Wheat (grain)",
+            "Mandioca": "Cassava",
+            "Café (em grão) Total": "Coffee (beans) Total",
+            "Laranja": "Orange",
+            "Bovino": "Cattle",
+        }
     )
 
     return pantanal_df
@@ -151,22 +169,21 @@ def run():
     quantity_df = io.load_table("preprocessed", "quantity")
     pecuaria_df = io.load_table("preprocessed", "pecuaria")
 
-    final_df = (
+    final_plot_df = (
         _combine_tables(area_df, quantity_df, pecuaria_df)
         >> _get_pantanal_df()
-        >> _agg_cultures()
-        >> _create_delta_variables()
+        >> _rename_crops()
     )
 
-    return final_df
+    final_model_df = final_plot_df >> _agg_cultures() >> _create_delta_variables()
+
+    return final_model_df, final_plot_df
 
 
 def save():
-    data = run()
-    import ipdb
-
-    ipdb.set_trace()
-    io.save_table(data, "domain", "pantanal")
+    data_model, data_plot = run()
+    io.save_table(data_model, "domain", "pantanal")
+    io.save_table(data_plot, "domain", "pantanal_plot")
 
 
 @click.command()
