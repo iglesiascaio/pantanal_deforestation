@@ -106,6 +106,13 @@ data:
         source: MAPBIOMAS
         kwargs:
           sheet_name: TRANSICAO_COL7
+      queimadas:
+        path: "mapbiomas-queimadas-2021.xlsx"
+        format: xlsx
+        source: MAPBIOMAS
+        kwargs:
+          sheet_name: MUNICIPIOS-UF
+
 
   preprocessed:
     base_uri: !j2 "{{ c.data_context.data_uri }}/preprocessed"
@@ -128,12 +135,18 @@ data:
       environmental_laws: 
         path: environmental_laws.parquet
         format: parquet
+      queimadas:
+        path: queimadas.parquet
+        format: parquet
       
   domain:
     base_uri: !j2 "{{ c.data_context.data_uri }}/domain"
     tables:
       pantanal: 
         path: "pantanal.parquet"
+        format: parquet
+      pantanal_plot: 
+        path: "pantanal_plot.parquet"
         format: parquet
       deforestation:
         path: deforestatio.parquet
@@ -144,9 +157,15 @@ data:
       environmental_laws: 
         path: environmental_laws.parquet
         format: parquet
+      queimadas: 
+        path: queimadas.parquet
+        format: parquet
   model:
     base_uri: !j2 "{{ c.data_context.data_uri }}/model"
     tables:
       model_df: 
         path: "model_df.parquet"
+        format: parquet
+      queimadas_prediction_df:
+        path: "queimadas_prediction_df.parquet"
         format: parquet
