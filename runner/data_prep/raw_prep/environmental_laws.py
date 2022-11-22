@@ -15,11 +15,11 @@ def run():
     df_law_enviromental = pd.DataFrame(
         {
             "law": [
-                "Novo Código Florestal Brasileiro",
-                "Lei de Crimes Ambientais",
-                "Política Nacional de Recursos Hídricos",
-                "Sistema Nacional de Unidades de Conservação da Natureza",
-                "Política Agrícola",
+                "New Brazilian Forest Code",
+                "Environmental Crimes Law",
+                "National Water Resources Policy",
+                "National System of Nature Conservation Units",
+                "Agricultural Policy",
             ],
             "implementation_year": [2012, 1998, 1997, 2000, 1991],
         }
@@ -33,9 +33,6 @@ def save():
     Save the quantitys pre-processed data.
     """
     data_p = run()
-    import ipdb
-
-    ipdb.set_trace()
     io.save_table(data_p, "preprocessed", "environmental_laws")
 
 

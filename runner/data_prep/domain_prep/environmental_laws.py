@@ -48,9 +48,6 @@ def run():
 
 def save():
     data = run()
-    import ipdb
-
-    ipdb.set_trace()
     io.save_table(data, "domain", "environmental_laws")
 
 
