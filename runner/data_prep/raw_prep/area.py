@@ -35,9 +35,9 @@ def _melt_and_concat_tables(list_tables):
     for i, df in enumerate(list_tables):
         # the last DataFrame is respective to permanent culture
         if i == len(list_tables) - 1:
-            type_df = "permanente"
+            type_df = "permanent"
         else:
-            type_df = "temporario"
+            type_df = "temporary"
         melted_list.append(__melt_and_treat_single_table(df, type_df))
 
     concat_df = pd.concat(melted_list).drop_duplicates().query('crop != "Total"')

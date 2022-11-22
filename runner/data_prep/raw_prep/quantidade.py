@@ -16,14 +16,12 @@ def __melt_and_treat_single_table(df, type_df):
             "level_0": "location",
             "1985": "year",
             "Total": "crop",
-            "value": "quantidade_ton",
+            "value": "quantity_ton",
         }
     )
 
-    df_melted["quantidade_ton"] = df_melted["quantidade_ton"].replace("-", 0)
-    df_melted["quantidade_ton"] = df_melted["quantidade_ton"].replace(
-        ["...", ".."], np.nan
-    )
+    df_melted["quantity_ton"] = df_melted["quantity_ton"].replace("-", 0)
+    df_melted["quantity_ton"] = df_melted["quantity_ton"].replace(["...", ".."], np.nan)
     df_melted["type"] = type_df
 
     return df_melted
@@ -37,9 +35,9 @@ def _melt_and_concat_tables(list_tables):
     for i, df in enumerate(list_tables):
         # the last DataFrame is respective to permanent culture
         if i == len(list_tables) - 1:
-            type_df = "permanente"
+            type_df = "permanent"
         else:
-            type_df = "temporario"
+            type_df = "temporary"
         melted_list.append(__melt_and_treat_single_table(df, type_df))
 
     concat_df = pd.concat(melted_list).drop_duplicates().query('crop != "Total"')
