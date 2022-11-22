@@ -84,10 +84,6 @@ def run():
 
     land_use_df = io.load_table("preprocessed", "land_use")
 
-    import ipdb
-
-    ipdb.set_trace()
-
     final_df = land_use_df >> _get_pantanal_df() >> _get_natural_and_total_area()
 
     return final_df
