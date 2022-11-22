@@ -25,7 +25,7 @@ def _prepare_production_pantanal_df(pantanal_df):
     crops_df = pantanal_df.query('type!="pecuaria"')
 
     pecuaria_df = pecuaria_df.drop(
-        columns=["crop", "type", "area_ha", "quantidade_ton"]
+        columns=["crop", "type", "area_ha", "quantity_ton"]
     ).rename(columns={"numero_cabecas": "nb_heads_cattle"})
 
     crops_df = crops_df.drop(columns=["type", "numero_cabecas"])
@@ -34,7 +34,7 @@ def _prepare_production_pantanal_df(pantanal_df):
 
     crops_df = pd.pivot_table(
         crops_df,
-        values=["quantidade_ton", "delta_quantidade_ton"],
+        values=["quantity_ton", "delta_quantity_ton"],
         index=["location", "year"],
         columns=["crop"],
     )
@@ -55,10 +55,6 @@ def _prepare_production_pantanal_df(pantanal_df):
 @pipe
 def _prepare_environmental_law_df(environmental_law_df):
 
-    import ipdb
-
-    ipdb.set_trace()
-
     environmental_law_df.columns = [
         "law_" + i.lower().replace(" ", "_") >> remove_special_char()
         if i != "year"
@@ -74,6 +70,7 @@ def _merge_dfs(
     processed_deforestation_df,
     area_pantanal_features_df,
     environmental_law_df,
+    queimadas_df,
 ):
     """
     Merge processed domain DataFrames.
@@ -82,6 +79,7 @@ def _merge_dfs(
     merged_df = (
         processed_pantanal_df.merge(processed_deforestation_df, on=["location", "year"])
         .merge(area_pantanal_features_df, on=["location", "year"])
+        .merge(queimadas_df, on=["location", "year"], how="left")
         .drop(columns=["location"])
         .merge(environmental_law_df, on=["year"], how="left")
     )
@@ -96,6 +94,8 @@ def _merge_dfs(
 @pipe
 def _create_lag_vars(merged_df, n_lag):
 
+    vars_to_lag = ["deforestation_ha", "nb_heads_cattle", "fires_ha"]
+
     grouped_df = merged_df.groupby(["city"])
 
     def __lag_by_group(key, value_df, i):
@@ -104,17 +104,8 @@ def _create_lag_vars(merged_df, n_lag):
             df.sort_values(by=["year"], ascending=True)
             .set_index(["year"])
             .shift(i)
-            .rename(
-                columns={
-                    "deforestation_ha": "deforestation_ha_lag_" + str(i),
-                    "nb_heads_cattle": "nb_heads_cattle_lag_" + str(i),
-                }
-            )[
-                [
-                    "city",
-                    "deforestation_ha_lag_" + str(i),
-                    "nb_heads_cattle_lag_" + str(i),
-                ]
+            .rename(columns={var: var + "_" + str(i) for var in vars_to_lag})[
+                ["city"] + [var + "_" + str(i) for var in vars_to_lag]
             ]
         )
 
@@ -126,10 +117,6 @@ def _create_lag_vars(merged_df, n_lag):
         lagged_df_it = pd.concat(dflist, axis=0).reset_index()
         merged_df = merged_df.merge(lagged_df_it, on=["city", "year"], how="left")
 
-    import ipdb
-
-    ipdb.set_trace()
-
     return merged_df
 
 
@@ -139,6 +126,7 @@ def run():
     deforestation_pantanal_df = io.load_table("domain", "deforestation")
     area_pantanal_features_df = io.load_table("domain", "area_pantanal_features")
     environmental_law_df = io.load_table("domain", "environmental_laws")
+    queimadas_df = io.load_table("domain", "queimadas")
     n_lags = 5
 
     processed_production_pantanal_df = (
@@ -157,6 +145,7 @@ def run():
         processed_deforestation_df,
         area_pantanal_features_df,
         environmental_law_df,
+        queimadas_df,
     ) >> _create_lag_vars(n_lags)
 
     return model_df
@@ -164,9 +153,6 @@ def run():
 
 def save():
     data = run()
-    import ipdb
-
-    ipdb.set_trace()
     io.save_table(data, "model", "model_df")
 
 
