@@ -7,85 +7,49 @@ from ..data_utils import pipe
 from runner import io
 
 
-# @pipe
-# def _compute_deforestation(pantanal_deforestation_df):
-#     """
-#     Compute deforestation (ha).
-#     """
-
-#     pantanal_deforestation_df["year"] = (
-#         pantanal_deforestation_df["year"]
-#         .astype("str")
-#         .apply(lambda x: datetime.datetime.strptime(x, "%Y"))
-#     )
-#     pantanal_deforestation_df = pantanal_deforestation_df.set_index(
-#         ["year", "location"]
-#     )
-
-#     shifted = pantanal_deforestation_df.groupby(level="location").shift(1)
-#     pantanal_deforestation_df = (
-#         pantanal_deforestation_df.join(
-#             shifted.rename(columns=lambda x: x + "_lag")
-#         ).drop(columns=["state_lag", "city_lag"])
-#     ).reset_index()
-
-#     pantanal_deforestation_df["deforestation_ha"] = (
-#         pantanal_deforestation_df["area_ha_lag"] - pantanal_deforestation_df["area_ha"]
-#     ).apply(lambda x: max(0, x))
-
-#     pantanal_deforestation_df["location_UF"] = pantanal_deforestation_df[
-#         "location"
-#     ].apply(lambda x: x[-3:-1])
-
-#     pantanal_deforestation_df = pantanal_deforestation_df.drop(columns=["state"])
-
-#     return pantanal_deforestation_df
-
-
 @pipe
 def _compute_deforestation(df):
 
+    df = df.rename(columns={"municipality": "city", "UF": "state"})
+
     dict_rename_transition = {
-        str(i) + "-" + str(i + 1): pd.to_datetime(str(i)) for i in range(1985, 2020)
+        str(i) + "-" + str(i + 1): pd.to_datetime(str(i)) for i in range(1985, 2021)
     }
     relevant_cols = [
         "city",
         "state",
         "location",
-        "from_level_0",
-        "from_level_1",
-        "from_level_2",
-        "from_level_3",
-        "from_level_4",
-        "to_level_0",
-        "to_level_1",
-        "to_level_2",
-        "to_level_3",
-        "to_level_4",
+        "biome",
+        "level_0",
+        "level_1",
+        "level_2",
+        "level_3",
+        "level_4",
+        "from_class",
+        "to_class",
     ]
 
-    import ipdb
-
-    ipdb.set_trace()
+    natural_ids = [3, 4, 5, 49, 11, 12, 32, 29, 50, 13]
 
     melted_df = (
         pd.melt(
-            df.query("from_level_0 == 'Natural' and to_level_0 == 'Anthropic'"),
+            # df.query(
+            #     " from_class.isin(@natural_ids) and level_0 == 'Anthropic' and biome == 'PANTANAL'"
+            # ),
+            df.query(" from_class.isin(@natural_ids) and level_0 == 'Anthropic'"),
             id_vars=relevant_cols,
             value_vars=list(dict_rename_transition.keys()),
             var_name="year",
             value_name="deforestation_ha",
         )
+        .drop(columns=["from_class", "to_class"])
+        .rename(columns={"location_UF": "state"})
         .groupby(["city", "state", "location", "year"])
         .sum()
         .reset_index()
         .assign(year=lambda x: x["year"].replace(dict_rename_transition))
         .rename(columns={"state": "location_UF"})
     )
-
-    import ipdb
-
-    ipdb.set_trace()
 
     return melted_df
 
@@ -94,7 +58,7 @@ def run():
 
     land_use_df = io.load_table("preprocessed", "land_use_transitions")
 
-    final_df = land_use_df >> _get_pantanal_df() >> _compute_deforestation()
+    final_df = land_use_df >> _compute_deforestation()
 
     return final_df
 
