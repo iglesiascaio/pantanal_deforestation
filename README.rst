@@ -1,4 +1,8 @@
-# Forecasting Deforestation in the Pantanal Biome, Brazil, using a machine-learning model
+===============
+Forecasting Deforestation in the Pantanal Biome, Brazil, using a machine-learning model
+===============
+
+
 
 Abstract
 --------
