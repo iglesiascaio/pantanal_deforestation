@@ -28,8 +28,7 @@ Then, activate it:
 This will activate the conda environmnet, install the dependencies required and set some key paths. 
 
 Dependencies
-~~~~~~~~~~~~
-
+------------
 
 To install dependencies:
 
@@ -75,7 +74,7 @@ Basic directory structure
 
 
 Data configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------
 
 The data configuration file is **10-data.yaml**.
 
@@ -83,7 +82,7 @@ These files define data location, format and everything else required to read/wr
 The data configuration files are used in the io module, which is the main way to perform read write data operations in the application.
 
 Using the io module to access data
-----------------------------------------
+------------------------------------
 
 The io module can perform read/write operation of data files (mostly tables and pickles).  
 To use the module, find which `domain` (ex: raw, preprocessed) and `table/pickle` (ex: perm_area) you want to read/write and use the standard functions of the io module.
@@ -91,7 +90,7 @@ To use the module, find which `domain` (ex: raw, preprocessed) and `table/pickle
 There are examples of usage of the io module below
 
 Pandas table
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------
 
 * Read:
 
@@ -108,7 +107,7 @@ Pandas table
 
 
 Pickle
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+------
 
 * Read:
 
@@ -125,7 +124,7 @@ Pickle
 
 
 Running tasks
---------------------
+--------------
 
 A task is simply a function from a module. There are simple requirements
 to be able to run them using the application standard process:
@@ -154,14 +153,14 @@ runner:
 The most common use cases is summarized in a few commands in the next subsections.
 
 Data ingestion and preprocessing
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------
 
 .. code:: bash
 
    ./run data-pipeline run-all
 
 Jupyter
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------
 
 Run the following command:
 
