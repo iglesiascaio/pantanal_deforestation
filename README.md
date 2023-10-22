@@ -15,9 +15,9 @@ Development environment
 
 To create and install python environment:
 
-.. code:: bash
+```bash
+make create-env
 
-   make create-env
 
 Then, activate it: 
 
