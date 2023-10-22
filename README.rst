@@ -15,15 +15,15 @@ Development environment
 
 To create and install python environment:
 
-```bash
+.. code:: bash
+
 make create-env
-```
 
 Then, activate it: 
 
-```bash
-. ./activate
-```
+.. code:: bash
+
+   . ./activate
 
 This will activate the conda environmnet, install the dependencies required and set some key paths. 
 
