@@ -17,13 +17,13 @@ To create and install python environment:
 
 ```bash
 make create-env
-
+```
 
 Then, activate it: 
 
-.. code:: bash
-
-   . ./activate
+```bash
+. ./activate
+```
 
 This will activate the conda environmnet, install the dependencies required and set some key paths. 
 
