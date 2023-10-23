@@ -1,23 +1,13 @@
-
-# PuLP
-
-# openpyxl
-
-# cerberus
-# plotly-express
-# xlsxwriter
-# httpx
-# pydantic
-# cbcpy
 gamma-config~=0.5.0
 click~=8.1.3
 pydantic~=1.9.1
 
 #data processing
-pandas~=1.4.3
+pandas~=2.1.1
 openpyxl~=3.0.10
 xlrd~=2.0.1
 pyarrow~=8.0.0
+numpy~=1.26.1
 
 #io
 fsspec~=2022.5.0
@@ -25,16 +15,14 @@ fsspec~=2022.5.0
 #logging
 rich~=12.4.4
 
-#optimization
-gurobipy~=9.1.1
-
 #ML
-sklearn
-xgboost
+scikit-learn~=1.1.2
+xgboost~=1.6.1
+shap~=0.43.0
 
 #coding
 black~=22.6.0
 
 #plotting 
 altair~=4.2.0
-seaborn~=0.11.2
+seaborn~=0.13.0
