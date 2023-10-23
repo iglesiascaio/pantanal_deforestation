@@ -169,6 +169,8 @@ The most common use cases is summarized in a few commands in the next subsection
 Data preprocessing
 --------------------------------
 
+In order to run the full data-pipeline, please use the following command:
+
 .. code:: bash
 
    ./run all_data_prep build-all
