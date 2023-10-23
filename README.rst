@@ -9,10 +9,6 @@ Abstract
 
 Halting deforestation is crucial to protect life on the planet and mitigate climate change. Regrettably, the Pantanal biome, a vital tropical wetland of notable relevance for Brazil and the world, is currently experiencing mounting deforestation rates. This trend may result in losing up to 86\% of the region’s natural vegetation. The Pantanal region has remained largely understudied despite successfully implementing contemporary statistical techniques to model and forecast deforestation in other regions. As a result, this study employs simulation modeling to explore a range of hypothetical land-use and burn-area scenarios, aiming to understand deforestation dynamics and to predict the loss of natural ecosystems in the Pantanal region by 2030. To predict deforestation in the Pantanal, the Machine Learning model XGBoost was employed. This model integrated a range of key features such as agricultural production, cattle head production, burned area, and deforestation in previous years.
 
-Setup
------
-
-This project uses Python (>=3.7).
 
 Development environment
 -----------------------
@@ -21,7 +17,7 @@ To create and install python environment:
 
 .. code:: bash
 
-make create-env
+   make create-env
 
 Then, activate it: 
 
@@ -32,7 +28,7 @@ Then, activate it:
 This will activate the conda environmnet, install the dependencies required and set some key paths. 
 
 Dependencies
-------------
+~~~~~~~~~~~~
 
 To install dependencies:
 
@@ -50,7 +46,7 @@ To compile dependencies:
 
 
 Development configuration
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Create a file in the project's root dir called ``config.local.env``,
 with the following structure:
@@ -86,7 +82,7 @@ These files define data location, format and everything else required to read/wr
 The data configuration files are used in the io module, which is the main way to perform read write data operations in the application.
 
 Using the io module to access data
-------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The io module can perform read/write operation of data files (mostly tables and pickles).  
 To use the module, find which `domain` (ex: raw, preprocessed) and `table/pickle` (ex: perm_area) you want to read/write and use the standard functions of the io module.
@@ -94,7 +90,7 @@ To use the module, find which `domain` (ex: raw, preprocessed) and `table/pickle
 There are examples of usage of the io module below
 
 Pandas table
-------------
+~~~~~~~~~~~~
 
 * Read:
 
@@ -111,7 +107,7 @@ Pandas table
 
 
 Pickle
-------
+~~~~~~
 
 * Read:
 
@@ -156,15 +152,29 @@ runner:
 
 The most common use cases is summarized in a few commands in the next subsections.
 
-Data ingestion and preprocessing
+Data preprocessing
 --------------------------------
 
 .. code:: bash
 
-   ./run data-pipeline run-all
+   ./run all_data_prep build-all
+
+
+
+Modelling and exploratory analysis
+-----------------------------------
+
+The modelling and the plots related to modelling can be found inside the file:
+
+.. code:: bash
+
+   ./notebooks/model.ipynb
+
+Other supplementary analysis can be found in the notebooks folder. 
+
 
 Jupyter
----------
+~~~~~~~~
 
 Run the following command:
 
