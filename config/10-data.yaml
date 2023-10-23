@@ -149,7 +149,7 @@ data:
         path: "pantanal_plot.parquet"
         format: parquet
       deforestation:
-        path: deforestatio.parquet
+        path: deforestation.parquet
         format: parquet
       area_pantanal_features:
         path: area_pantanal_features.parquet
