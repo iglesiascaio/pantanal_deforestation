@@ -6,6 +6,15 @@ Forecasting Deforestation in the Pantanal Biome, Brazil, using a machine-learnin
 Halting deforestation is imperative for safeguarding global ecosystems and mitigating climate change. Unfortunately, the Pantanal biome, a vital tropical wetland of international significance, faces a concerning surge in deforestation rates. If unabated, this trend may result in a 29.5% loss of its natural vegetation until 2030. Despite the successful application of contemporary statistical techniques in modeling deforestation in other regions, the Pantanal remains relatively understudied. This study employs simulation modeling to comprehend deforestation dynamics and predict ecosystem loss in the Pantanal by 2030. The XGBoost Machine Learning model is harnessed, integrating crucial features such as agricultural production, cattle head counts, burned areas, and past deforestation trends
 
 
+Highlights
+-----------
+
+- BAU scenario predicts a 2.65 million hectares loss of natural area until 2030.
+- A 14% reduction in cattle production and controlling burned areas prevents the loss of around 17.6% of natural area.
+- Deforestation may lead to losing up to 29.5% of the region's remaining natural vegetation in 9 years.
+
+
+
 Methodology
 -----------
 
