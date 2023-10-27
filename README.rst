@@ -3,11 +3,25 @@ Forecasting Deforestation in the Pantanal Biome, Brazil, using a machine-learnin
 ===============
 
 
-
-Abstract
---------
-
 Halting deforestation is crucial to protect life on the planet and mitigate climate change. Regrettably, the Pantanal biome, a vital tropical wetland of notable relevance for Brazil and the world, is currently experiencing mounting deforestation rates. This trend may result in losing up to 86\% of the region’s natural vegetation. The Pantanal region has remained largely understudied despite successfully implementing contemporary statistical techniques to model and forecast deforestation in other regions. As a result, this study employs simulation modeling to explore a range of hypothetical land-use and burn-area scenarios, aiming to understand deforestation dynamics and to predict the loss of natural ecosystems in the Pantanal region by 2030. To predict deforestation in the Pantanal, the Machine Learning model XGBoost was employed. This model integrated a range of key features such as agricultural production, cattle head production, burned area, and deforestation in previous years.
+
+
+Methodology
+-----------
+
+High level view of the project's methodology: 
+
+.. image:: ./images/diagram_methodology.png
+   :alt: Methodology Diagram
+
+
+Features Used
+-------------
+
+High level view of the features used during the project:
+
+.. image:: ./images/features_diagram.png
+   :alt: Features Diagram
 
 
 Development environment
@@ -154,6 +168,8 @@ The most common use cases is summarized in a few commands in the next subsection
 
 Data preprocessing
 --------------------------------
+
+In order to run the full data-pipeline, please use the following command:
 
 .. code:: bash
 
