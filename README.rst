@@ -9,10 +9,9 @@ Halting deforestation is imperative for safeguarding global ecosystems and mitig
 Highlights
 -----------
 
-- BAU scenario predicts a 2.65 million hectares loss of natural area until 2030.
-- A 14% reduction in cattle production and controlling burned areas prevents the loss of around 17.6% of natural area.
-- Deforestation may lead to losing up to 29.5% of the region's remaining natural vegetation in 9 years.
-
+- The Business-as-Usual (BAU) scenario anticipates a depletion of 2.65 million hectares of natural area by the year 2030.
+- Implementing a 14% reduction in cattle production and effective control of areas prone to wildfires can mitigate the loss of approximately 17.6% of the natural ecosystem.
+- Unabated deforestation poses a significant risk, potentially resulting in the depletion of up to 29.5% of the region's remaining natural vegetation over a span of nine years.
 
 
 Methodology
